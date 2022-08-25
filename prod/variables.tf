@@ -1,4 +1,4 @@
-# General
+# general
 variable "REGION" {
   type    = string
   default = "eu-west-3"
@@ -8,7 +8,7 @@ variable "PROJECT_TAG" {
   type = string
 }
 
-# DEMO_VPC (network, network_data)
+# vpc
 variable "DEMO_VPC_NAME" {
   type = string
 }
@@ -30,7 +30,7 @@ variable "DEMO_VPC_PUBLIC_SUBNET_CIDRS" {
   type = list(string)
 }
 
-# Bastion host (bastion_host)
+# bastion host
 variable "DEMO_BASTION_HOST_TYPE" {
   type    = string
   default = "t2.micro"
@@ -46,4 +46,21 @@ variable "DEMO_BASTION_HOST_KEY_NAME" {
 
 variable "DEMO_BASTION_HOST_AZ" {
   type = string
+}
+
+# demo app
+variable "DEMO_APP_EC2_TYPE" {
+  type = string
+}
+
+variable "DEMO_APP_EC2_KEY_NAME" {
+  type = string
+}
+
+variable "DEMO_APP_ASG_MIN_SIZE" {
+  type = number
+}
+
+variable "DEMO_APP_ASG_MAX_SIZE" {
+  type = number
 }
