@@ -12,8 +12,8 @@ module "vpc" {
   cidr = var.DEMO_VPC_CIDR
 
   azs             = var.DEMO_VPC_AVAILABILITY_ZONES
-  private_subnets = var.DEMO_VPC_PRIVATE_SUBNET_CIDRS
-  public_subnets  = var.DEMO_VPC_PUBLIC_SUBNET_CIDRS
+  private_subnets = var.DEMO_VPC_PRIVATE_SUBNETS_CIDRS
+  public_subnets  = var.DEMO_VPC_PUBLIC_SUBNETS_CIDRS
 
   enable_nat_gateway     = true
   single_nat_gateway     = true
@@ -52,6 +52,15 @@ module "bastion_host" {
   EC2_KEY_NAME      = var.DEMO_BASTION_HOST_KEY_NAME
 }
 
+# Create ALB
+module "alb" {
+  source = "../modules/alb"
+
+  VPC_ID = module.vpc_data.vpc.id
+  PROJECT_TAG = var.PROJECT_TAG
+  ALB_SUBNETS_IDS = module.vpc_data.public_subnets.ids
+}
+
 # Create demo app
 module "app" {
   source = "../modules/app"
@@ -65,4 +74,6 @@ module "app" {
 
   ASG_MIN_SIZE = var.DEMO_APP_ASG_MIN_SIZE
   ASG_MAX_SIZE = var.DEMO_APP_ASG_MAX_SIZE
+
+  ALB_TARGET_GROUP_ARNS = [module.alb.alb_tg.arn]
 }

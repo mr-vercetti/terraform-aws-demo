@@ -22,11 +22,11 @@ variable "DEMO_VPC_AVAILABILITY_ZONES" {
   type = list(string)
 }
 
-variable "DEMO_VPC_PRIVATE_SUBNET_CIDRS" {
+variable "DEMO_VPC_PRIVATE_SUBNETS_CIDRS" {
   type = list(string)
 }
 
-variable "DEMO_VPC_PUBLIC_SUBNET_CIDRS" {
+variable "DEMO_VPC_PUBLIC_SUBNETS_CIDRS" {
   type = list(string)
 }
 

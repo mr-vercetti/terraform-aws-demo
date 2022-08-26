@@ -27,14 +27,6 @@ resource "aws_security_group" "this" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -72,6 +64,7 @@ resource "aws_autoscaling_group" "this" {
   vpc_zone_identifier       = var.VPC_SUBNETS_IDS
   health_check_type         = "ELB"
   health_check_grace_period = "90"
+  target_group_arns         = var.ALB_TARGET_GROUP_ARNS
 
   tag {
     key                 = "Name"

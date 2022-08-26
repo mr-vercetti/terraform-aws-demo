@@ -28,3 +28,8 @@ variable "ASG_MIN_SIZE" {
 variable "ASG_MAX_SIZE" {
   type = number
 }
+
+# ALB
+variable "ALB_TARGET_GROUP_ARNS" {
+  type = list(string)
+}
