@@ -1,5 +1,5 @@
 resource "aws_security_group" "this" {
-  name = "demo-app-autoscaling-group-sg"
+  name = "${var.PROJECT_NAME}-autoscaling-group-sg"
 
   vpc_id = var.VPC_ID
 
@@ -40,7 +40,7 @@ data "template_file" "bootstrap" {
 }
 
 resource "aws_launch_configuration" "this" {
-  name = "demo-app-launch-configuration"
+  name = "${var.PROJECT_NAME}-launch-configuration"
 
   image_id      = var.EC2_AMI
   instance_type = var.EC2_TYPE
@@ -55,7 +55,7 @@ resource "aws_launch_configuration" "this" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name = "demo-app-autoscaling-group"
+  name = "${var.PROJECT_NAME}-autoscaling-group"
 
   min_size = var.ASG_MIN_SIZE
   max_size = var.ASG_MAX_SIZE
@@ -68,14 +68,14 @@ resource "aws_autoscaling_group" "this" {
 
   tag {
     key                 = "Name"
-    value               = "demo-app-instance"
+    value               = "${var.PROJECT_NAME}-instance"
     propagate_at_launch = true
   }
 }
 
 # asg scale up policy
 resource "aws_autoscaling_policy" "cpu-policy" {
-  name = "demo-app-cpu-policy"
+  name = "${var.PROJECT_NAME}-cpu-policy"
 
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"
@@ -105,7 +105,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu-alarm" {
 
 # asg scale down policy
 resource "aws_autoscaling_policy" "cpu-policy-scaledown" {
-  name = "demo-app-cpu-policy-scaledown"
+  name = "${var.PROJECT_NAME}-cpu-policy-scaledown"
 
   autoscaling_group_name = aws_autoscaling_group.this.name
   adjustment_type        = "ChangeInCapacity"

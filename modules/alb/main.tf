@@ -1,5 +1,5 @@
 resource "aws_security_group" "this" {
-  name = "demo-app-alb-sg"
+  name = "${var.PROJECT_NAME}-alb-sg"
 
   vpc_id = var.VPC_ID
 
@@ -20,20 +20,16 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_lb" "this" {
-  name               = "demo-app-alb"
-  
+  name = "${var.PROJECT_NAME}-alb"
+
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.this.id]
   subnets            = var.ALB_SUBNETS_IDS
-
-  tags = {
-    Project = var.PROJECT_TAG
-  }
 }
 
 resource "aws_lb_target_group" "this" {
-  name     = "demo-app-alb-tg"
+  name     = "${var.PROJECT_NAME}-alb-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.VPC_ID

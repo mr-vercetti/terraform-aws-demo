@@ -1,0 +1,20 @@
+# general
+REGION      = "eu-west-3"
+PROJECT_NAME = "demo"
+
+# vpc
+DEMO_VPC_CIDR                 = "10.0.0.0/24"
+DEMO_VPC_AVAILABILITY_ZONES   = ["eu-west-3a", "eu-west-3b"]
+DEMO_VPC_PRIVATE_SUBNETS_CIDRS = ["10.0.0.0/28", "10.0.0.16/28"]
+DEMO_VPC_PUBLIC_SUBNETS_CIDRS  = ["10.0.0.32/28", "10.0.0.48/28"]
+
+# bastion host
+DEMO_BASTION_HOST_TYPE     = "t2.micro"
+DEMO_BASTION_HOST_KEY_NAME = "aws-key"
+DEMO_BASTION_HOST_AZ       = "eu-west-3a"
+
+# demo app
+DEMO_APP_EC2_TYPE     = "t2.micro"
+DEMO_APP_EC2_KEY_NAME = "aws-key"
+DEMO_APP_ASG_MIN_SIZE = 2
+DEMO_APP_ASG_MAX_SIZE = 5

@@ -1,3 +1,7 @@
+variable "PROJECT_NAME" {
+  type = string
+}
+
 # VPC
 variable "VPC_ID" {
   type = string

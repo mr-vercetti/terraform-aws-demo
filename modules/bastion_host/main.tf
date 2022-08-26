@@ -1,5 +1,5 @@
 resource "aws_security_group" "this" {
-  name = "bastion-host-sg"
+  name = "${var.PROJECT_NAME}-bastion-host-sg"
 
   vpc_id = var.VPC_ID
 
@@ -20,18 +20,18 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_network_interface" "this" {
-  subnet_id = var.SUBNET_ID
+  subnet_id       = var.SUBNET_ID
   security_groups = [aws_security_group.this.id]
 
   tags = {
-    Name = "bastion-host-nic"
+    Name = "${var.PROJECT_NAME}-bastion-host-nic"
   }
 }
 
 resource "aws_instance" "this" {
   ami           = var.EC2_AMI
   instance_type = var.EC2_TYPE
-  key_name = var.EC2_KEY_NAME
+  key_name      = var.EC2_KEY_NAME
 
   network_interface {
     network_interface_id = aws_network_interface.this.id
@@ -39,6 +39,6 @@ resource "aws_instance" "this" {
   }
 
   tags = {
-    Name = var.EC2_INSTANCE_NAME
+    Name = "${var.PROJECT_NAME}-bastion-host"
   }
 }

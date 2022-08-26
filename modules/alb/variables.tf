@@ -1,8 +1,8 @@
-variable "VPC_ID" {
+variable "PROJECT_NAME" {
   type = string
 }
 
-variable "PROJECT_TAG" {
+variable "VPC_ID" {
   type = string
 }
 

@@ -4,15 +4,11 @@ variable "REGION" {
   default = "eu-west-3"
 }
 
-variable "PROJECT_TAG" {
+variable "PROJECT_NAME" {
   type = string
 }
 
 # vpc
-variable "DEMO_VPC_NAME" {
-  type = string
-}
-
 variable "DEMO_VPC_CIDR" {
   type    = string
   default = "10.0.0.0/24"
@@ -34,10 +30,6 @@ variable "DEMO_VPC_PUBLIC_SUBNETS_CIDRS" {
 variable "DEMO_BASTION_HOST_TYPE" {
   type    = string
   default = "t2.micro"
-}
-
-variable "DEMO_BASTION_HOST_NAME" {
-  type = string
 }
 
 variable "DEMO_BASTION_HOST_KEY_NAME" {

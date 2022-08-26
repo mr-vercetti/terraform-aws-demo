@@ -8,7 +8,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.14.2"
 
-  name = var.DEMO_VPC_NAME
+  name = "${var.PROJECT_NAME}-vpc"
   cidr = var.DEMO_VPC_CIDR
 
   azs             = var.DEMO_VPC_AVAILABILITY_ZONES
@@ -21,7 +21,6 @@ module "vpc" {
 
   tags = {
     Terraform = "true"
-    Project   = var.PROJECT_TAG
   }
 }
 
@@ -30,7 +29,7 @@ module "vpc_data" {
   source     = "../modules/vpc_data"
   depends_on = [module.vpc]
 
-  VPC_NAME        = var.DEMO_VPC_NAME
+  VPC_NAME        = "${var.PROJECT_NAME}-vpc"
   BASTION_HOST_AZ = var.DEMO_BASTION_HOST_AZ
 }
 
@@ -43,27 +42,32 @@ module "ami_data" {
 module "bastion_host" {
   source = "../modules/bastion_host"
 
+  PROJECT_NAME = var.PROJECT_NAME
+
   VPC_ID    = module.vpc_data.vpc.id
   SUBNET_ID = module.vpc_data.bastion_host_subnet.id
 
-  EC2_AMI           = module.ami_data.amazon_linux.id
-  EC2_TYPE          = var.DEMO_BASTION_HOST_TYPE
-  EC2_INSTANCE_NAME = var.DEMO_BASTION_HOST_NAME
-  EC2_KEY_NAME      = var.DEMO_BASTION_HOST_KEY_NAME
+  EC2_AMI      = module.ami_data.amazon_linux.id
+  EC2_TYPE     = var.DEMO_BASTION_HOST_TYPE
+  EC2_KEY_NAME = var.DEMO_BASTION_HOST_KEY_NAME
 }
 
 # Create ALB
 module "alb" {
   source = "../modules/alb"
 
+  PROJECT_NAME = var.PROJECT_NAME
+
   VPC_ID = module.vpc_data.vpc.id
-  PROJECT_TAG = var.PROJECT_TAG
+
   ALB_SUBNETS_IDS = module.vpc_data.public_subnets.ids
 }
 
 # Create demo app
 module "app" {
   source = "../modules/app"
+
+  PROJECT_NAME = var.PROJECT_NAME
 
   VPC_ID          = module.vpc_data.vpc.id
   VPC_SUBNETS_IDS = module.vpc_data.private_subnets.ids
