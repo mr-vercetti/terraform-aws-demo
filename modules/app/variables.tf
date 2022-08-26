@@ -8,7 +8,7 @@ variable "VPC_SUBNETS_IDS" {
 }
 
 # EC2
-variable "EC2_IMAGE_ID" {
+variable "EC2_AMI" {
   type = string
 }
 

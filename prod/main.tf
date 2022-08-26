@@ -27,11 +27,16 @@ module "vpc" {
 
 # Get VPC data
 module "vpc_data" {
-  depends_on = [module.vpc]
   source     = "../modules/vpc_data"
+  depends_on = [module.vpc]
 
   VPC_NAME        = var.DEMO_VPC_NAME
   BASTION_HOST_AZ = var.DEMO_BASTION_HOST_AZ
+}
+
+# Get AMI data
+module "ami_data" {
+  source = "../modules/ami_data"
 }
 
 # Create bastion host
@@ -41,30 +46,10 @@ module "bastion_host" {
   VPC_ID    = module.vpc_data.vpc.id
   SUBNET_ID = module.vpc_data.bastion_host_subnet.id
 
-  INSTANCE_TYPE = var.DEMO_BASTION_HOST_TYPE
-  INSTANCE_NAME = var.DEMO_BASTION_HOST_NAME
-  KEY_NAME      = var.DEMO_BASTION_HOST_KEY_NAME
-}
-
-data "aws_ami" "amazon-linux" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-*-gp2"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["amazon"]
+  EC2_AMI           = module.ami_data.amazon_linux.id
+  EC2_TYPE          = var.DEMO_BASTION_HOST_TYPE
+  EC2_INSTANCE_NAME = var.DEMO_BASTION_HOST_NAME
+  EC2_KEY_NAME      = var.DEMO_BASTION_HOST_KEY_NAME
 }
 
 # Create demo app
@@ -74,10 +59,10 @@ module "app" {
   VPC_ID          = module.vpc_data.vpc.id
   VPC_SUBNETS_IDS = module.vpc_data.private_subnets.ids
 
-  EC2_IMAGE_ID = data.aws_ami.amazon-linux.id
+  EC2_AMI      = module.ami_data.amazon_linux.id
   EC2_TYPE     = var.DEMO_APP_EC2_TYPE
   EC2_KEY_NAME = var.DEMO_APP_EC2_KEY_NAME
 
-  ASG_MIN_SIZE     = var.DEMO_APP_ASG_MIN_SIZE
-  ASG_MAX_SIZE     = var.DEMO_APP_ASG_MAX_SIZE
+  ASG_MIN_SIZE = var.DEMO_APP_ASG_MIN_SIZE
+  ASG_MAX_SIZE = var.DEMO_APP_ASG_MAX_SIZE
 }

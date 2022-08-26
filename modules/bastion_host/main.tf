@@ -1,24 +1,3 @@
-data "aws_ami" "amazon-linux" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-*-gp2"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["amazon"]
-}
-
 resource "aws_security_group" "this" {
   name = "bastion-host-sg"
 
@@ -50,9 +29,9 @@ resource "aws_network_interface" "this" {
 }
 
 resource "aws_instance" "this" {
-  ami           = data.aws_ami.amazon-linux.id
-  instance_type = var.INSTANCE_TYPE
-  key_name = var.KEY_NAME
+  ami           = var.EC2_AMI
+  instance_type = var.EC2_TYPE
+  key_name = var.EC2_KEY_NAME
 
   network_interface {
     network_interface_id = aws_network_interface.this.id
@@ -60,6 +39,6 @@ resource "aws_instance" "this" {
   }
 
   tags = {
-    Name = var.INSTANCE_NAME
+    Name = var.EC2_INSTANCE_NAME
   }
 }

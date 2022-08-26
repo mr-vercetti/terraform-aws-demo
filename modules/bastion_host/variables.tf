@@ -6,15 +6,19 @@ variable "SUBNET_ID" {
   type = string
 }
 
-variable "INSTANCE_TYPE" {
+variable "EC2_AMI" {
+  type = string
+}
+
+variable "EC2_TYPE" {
   type = string
   default = "t2.micro"
 }
 
-variable "INSTANCE_NAME" {
+variable "EC2_INSTANCE_NAME" {
   type = string
 }
 
-variable "KEY_NAME" {
+variable "EC2_KEY_NAME" {
   type = string
 }

@@ -50,12 +50,12 @@ data "template_file" "bootstrap" {
 resource "aws_launch_configuration" "this" {
   name = "demo-app-launch-configuration"
 
-  image_id      = var.EC2_IMAGE_ID
+  image_id      = var.EC2_AMI
   instance_type = var.EC2_TYPE
 
-  key_name = var.EC2_KEY_NAME
+  key_name        = var.EC2_KEY_NAME
   security_groups = [aws_security_group.this.id]
-  user_data = data.template_file.bootstrap.rendered
+  user_data       = data.template_file.bootstrap.rendered
 
   lifecycle {
     create_before_destroy = true
@@ -65,8 +65,8 @@ resource "aws_launch_configuration" "this" {
 resource "aws_autoscaling_group" "this" {
   name = "demo-app-autoscaling-group"
 
-  min_size         = var.ASG_MIN_SIZE
-  max_size         = var.ASG_MAX_SIZE
+  min_size = var.ASG_MIN_SIZE
+  max_size = var.ASG_MAX_SIZE
 
   launch_configuration      = aws_launch_configuration.this.name
   vpc_zone_identifier       = var.VPC_SUBNETS_IDS
@@ -80,10 +80,62 @@ resource "aws_autoscaling_group" "this" {
   }
 }
 
-resource "aws_autoscaling_policy" "this" {
-  name                   = "demo-app-autoscaling-policy"
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
+# asg scale up policy
+resource "aws_autoscaling_policy" "cpu-policy" {
+  name = "demo-app-cpu-policy"
+
   autoscaling_group_name = aws_autoscaling_group.this.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = "1"
+  cooldown               = "300"
+  policy_type            = "SimpleScaling"
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-alarm" {
+  alarm_name          = "cpu-alarm"
+  alarm_description   = "cpu-alarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "30"
+
+  dimensions = {
+    "AutoScalingGroupName" = "${aws_autoscaling_group.this.name}"
+  }
+
+  actions_enabled = true
+  alarm_actions   = ["${aws_autoscaling_policy.cpu-policy.arn}"]
+}
+
+# asg scale down policy
+resource "aws_autoscaling_policy" "cpu-policy-scaledown" {
+  name = "demo-app-cpu-policy-scaledown"
+
+  autoscaling_group_name = aws_autoscaling_group.this.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = "-1"
+  cooldown               = "300"
+  policy_type            = "SimpleScaling"
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu-alarm-scaledown" {
+  alarm_name          = "cpu-alarm-scaledown"
+  alarm_description   = "cpu-alarm-scaledown"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "5"
+
+  dimensions = {
+    "AutoScalingGroupName" = "${aws_autoscaling_group.this.name}"
+  }
+
+  actions_enabled = true
+  alarm_actions   = ["${aws_autoscaling_policy.cpu-policy-scaledown.arn}"]
 }
