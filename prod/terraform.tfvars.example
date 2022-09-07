@@ -1,10 +1,10 @@
 # general
-REGION      = "eu-west-3"
+REGION       = "eu-west-3"
 PROJECT_NAME = "demo"
 
 # vpc
-DEMO_VPC_CIDR                 = "10.0.0.0/24"
-DEMO_VPC_AVAILABILITY_ZONES   = ["eu-west-3a", "eu-west-3b"]
+DEMO_VPC_CIDR                  = "10.0.0.0/24"
+DEMO_VPC_AVAILABILITY_ZONES    = ["eu-west-3a", "eu-west-3b"]
 DEMO_VPC_PRIVATE_SUBNETS_CIDRS = ["10.0.0.0/28", "10.0.0.16/28"]
 DEMO_VPC_PUBLIC_SUBNETS_CIDRS  = ["10.0.0.32/28", "10.0.0.48/28"]
 

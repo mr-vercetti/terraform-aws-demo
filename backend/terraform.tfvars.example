@@ -1,0 +1,10 @@
+# general
+REGION         = "eu-west-3"
+REGION_REPLICA = "eu-north-1"
+
+S3_STATE_BUCKET_NAME         = "demo-state-bucket-98017casd"
+S3_STATE_BUCKET_REPLICA_NAME = "demo-state-bucket-replica-98017casd"
+
+STATE_KMS_KEY_ALIAS = "demo-state-kms-key"
+
+STATE_DYNAMODB_TABLE_NAME = "demo-state-lock"
